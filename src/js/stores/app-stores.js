@@ -7,13 +7,13 @@ var AppConstants = require('../constants/app-constants');
 
 var changeEvent = 'change';
 //fill the data
-var _catlog = [];
+var _catalog = [];
 
-for(var i = 0;i<10;i++{
- _catlog.push({
+for(var i = 0;i<10;i++){
+ _catalog.push({
  	id:i+1,
  	name:'item'+i,
- 	price:100*1
+ 	cost:50*i
  });
 
 }
@@ -79,7 +79,10 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 		AppStore.emitChange();
 
 		return true;
-	})
+	}),
+	getCatloge:function(){
+		return _catalog;
+	}
 
 });
 

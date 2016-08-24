@@ -1,5 +1,8 @@
 var React = require('react');
-var AppActions = require('../actions/app-actions');
+var AppCatloge = require('../components/app-catloge'); 
+
+
+
 
 var App = React.createClass({
 	handleClick:function(){
@@ -8,7 +11,14 @@ var App = React.createClass({
 	},
 	render: function() {
 		return (
-			<h1 onClick={this.handleClick}>My Flux App</h1>
+			<div className="mainComponent">
+				<h1>Let's Shop</h1>
+				
+				<AppCatloge/>
+
+			</div>
+			
+
 		);
 	}
 });
