@@ -1,6 +1,6 @@
 var React = require('react');
-var AppStore = require('../stores/app-stores');
-var AddToCart = require('../components/app-addToCart');
+var AppStore = require('../../stores/app-stores');
+var AddToCart = require('./app-addToCart');
 
 
 var AppCatloge = React.createClass({

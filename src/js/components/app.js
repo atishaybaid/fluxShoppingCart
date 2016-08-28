@@ -1,6 +1,6 @@
 var React = require('react');
-var AppCatloge = require('../components/app-catloge'); 
-var Cart = require('../components/app-cart');
+var AppCatloge = require('./cataloge/app-catloge'); 
+var Cart = require('./cart/app-cart');
 
 
 
