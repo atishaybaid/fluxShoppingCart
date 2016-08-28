@@ -21040,6 +21040,7 @@ var AppActions = {
 		})
 	},
 	increaseItem:function(index){
+		console.log("at increaseItem");
 		AppDispatcher.handleViewAction({
 			actionType:AppConstants.INCREASE_ITEM,
 			item:index
@@ -21056,7 +21057,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/app-constants":180,"../dispatchers/app-dispatcher":181}],177:[function(require,module,exports){
+},{"../constants/app-constants":184,"../dispatchers/app-dispatcher":185}],177:[function(require,module,exports){
 var React =   require('react');
 var AppActions = require('../actions/app-actions');
 
@@ -21079,6 +21080,61 @@ var AddToCart = React.createClass({displayName: "AddToCart",
 module.exports = AddToCart;
 
 },{"../actions/app-actions":176,"react":175}],178:[function(require,module,exports){
+var React = require('react');
+var AppStore = require('../stores/app-stores');
+var RemoveFromCart = require('../components/app-removeFromCart');
+var IncreaseItem = require('../components/app-increaseItem');
+var DecreaseItem = require('../components/app-decreaseItem');
+
+
+
+var Cart = React.createClass({displayName: "Cart",
+getInitialState: function() {
+	return {
+		cartItems:AppStore.getCart()
+	};
+},
+componentDidMount: function() {
+	AppStore.addChangeListener(function(){
+		console.log("something changed");
+		this.setState({cartItems:AppStore.getCart()});
+	}.bind(this));
+},
+render: function() {
+	console.log("render Called again");
+	var catalogeItems = this.state.cartItems.map(function(item,i){
+			return(React.createElement("div", {className: "cart"}, 
+					React.createElement("tr", null, 
+						React.createElement("td", null, item.name), 
+						React.createElement("td", null, React.createElement(DecreaseItem, {index: i}), item.qty, React.createElement(IncreaseItem, {index: i})), 
+						React.createElement("td", null, React.createElement(RemoveFromCart, null))
+					), 
+
+					React.createElement("div", {className: "total-bill"}, 
+						React.createElement("span", null, "Bill"), AppStore.getTotal()
+					)
+				 )
+
+					
+				)
+		});
+
+	return (
+		React.createElement("div", {className: "Cart"}, 
+		React.createElement("h1", null, "Your Cart"), 
+		React.createElement("table", {className: "table table-hover"}, 
+		catalogeItems
+		)
+		)
+		
+	);
+}
+});
+
+
+module.exports = Cart;
+
+},{"../components/app-decreaseItem":180,"../components/app-increaseItem":181,"../components/app-removeFromCart":182,"../stores/app-stores":187,"react":175}],179:[function(require,module,exports){
 var React = require('react');
 var AppStore = require('../stores/app-stores');
 var AddToCart = require('../components/app-addToCart');
@@ -21113,10 +21169,80 @@ var AppCatloge = React.createClass({displayName: "AppCatloge",
 
 module.exports =  AppCatloge;
 
-},{"../components/app-addToCart":177,"../stores/app-stores":183,"react":175}],179:[function(require,module,exports){
+},{"../components/app-addToCart":177,"../stores/app-stores":187,"react":175}],180:[function(require,module,exports){
+var React =   require('react');
+var AppActions = require('../actions/app-actions');
+
+
+var DecreaseItem = React.createClass({displayName: "DecreaseItem",
+	
+	handler:function(){
+		AppActions.decreaseItem(this.props.index);
+	},
+	render:function(){
+		return (
+		React.createElement("button", {onClick: this.handler}, "-")
+		)
+
+	}
+	
+		
+});
+
+
+module.exports = DecreaseItem;
+
+},{"../actions/app-actions":176,"react":175}],181:[function(require,module,exports){
+var React =   require('react');
+var AppActions = require('../actions/app-actions');
+
+
+var IncreaseItem = React.createClass({displayName: "IncreaseItem",
+	
+	handler:function(){
+		console.log(this.props.index);
+		AppActions.increaseItem(this.props.index);
+	},
+	render:function(){
+		return (
+		React.createElement("button", {onClick: this.handler}, "+")
+		)
+
+	}
+	
+		
+});
+
+
+module.exports = IncreaseItem;
+
+},{"../actions/app-actions":176,"react":175}],182:[function(require,module,exports){
+var React =   require('react');
+var AppActions = require('../actions/app-actions');
+
+
+var RemoveFromCart = React.createClass({displayName: "RemoveFromCart",
+	
+	handler:function(){
+		AppActions.removeItem(this.props.index);
+	},
+	render:function(){
+		return (
+		React.createElement("button", {onClick: this.handler}, "Remove From Cart")
+		)
+
+	}
+	
+		
+});
+
+
+module.exports = RemoveFromCart;
+
+},{"../actions/app-actions":176,"react":175}],183:[function(require,module,exports){
 var React = require('react');
 var AppCatloge = require('../components/app-catloge'); 
-
+var Cart = require('../components/app-cart');
 
 
 
@@ -21130,7 +21256,8 @@ var App = React.createClass({displayName: "App",
 			React.createElement("div", {className: "mainComponent"}, 
 				React.createElement("h1", null, "Let's Shop"), 
 				
-				React.createElement(AppCatloge, null)
+				React.createElement(AppCatloge, null), 
+				React.createElement(Cart, null)
 
 			)
 			
@@ -21142,7 +21269,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../components/app-catloge":178,"react":175}],180:[function(require,module,exports){
+},{"../components/app-cart":178,"../components/app-catloge":179,"react":175}],184:[function(require,module,exports){
 module.exports ={
 	ADD_ITEM:'ADD_ITEM',
 	REMOVE_ITEM:'REMOVE_ITEM',
@@ -21150,12 +21277,13 @@ module.exports ={
 	DECREASE_ITEM:'DECREASE_ITEM'
 }
 
-},{}],181:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 
 var AppDispatcher = Object.assign(new Dispatcher,{
 	handleViewAction:function(action){
+		console.log(action);
 		this.dispatch({
 			source:'VIEW_ACTION',
 			action:action
@@ -21166,14 +21294,14 @@ var AppDispatcher = Object.assign(new Dispatcher,{
 
 module.exports = AppDispatcher;
 
-},{"flux":3}],182:[function(require,module,exports){
+},{"flux":3}],186:[function(require,module,exports){
 var App = require('./components/app');
 var React = require('react');
 var ReactDom = require('react-dom');
 
 ReactDom.render(React.createElement(App, null),document.getElementById('main'));
 
-},{"./components/app":179,"react":175,"react-dom":6}],183:[function(require,module,exports){
+},{"./components/app":183,"react":175,"react-dom":6}],187:[function(require,module,exports){
 var React = require('react');
 var EventEmitter = require('events').EventEmitter;
 var AppDispatcher = require('../dispatchers/app-dispatcher');
@@ -21189,7 +21317,9 @@ for(var i = 0;i<10;i++){
  _catalog.push({
  	id:i+1,
  	name:'item'+i,
- 	cost:50*i
+ 	cost:50*i,
+ 	qty:0,
+ 	inCart:false
  });
 
 }
@@ -21202,17 +21332,21 @@ function _removeItem(index){
 };
 
 function _increaseItem(index){
+	console.log(" at _increaseItem of store");
 	_cartItems[index].qty++;
 };
 
 function _decreaseItem(index){
+	console.log("at _decreaseItem");
 	_cartItems[index].qty--;
 };
 
 
 function _addItem(item){
 	item['qty'] = 1;
+	item['inCart'] = true;
 	_cartItems.push(item);
+	console.log(_cartItems);
 }
 
 
@@ -21222,6 +21356,7 @@ function _addItem(item){
 
 var AppStore = Object.assign(EventEmitter.prototype,{
 	emitChange:function(){
+		console.log("at emit change");
 		this.emit(changeEvent);
 	},
 	addChangeListener:function(callback){
@@ -21232,6 +21367,7 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 	},
 	displatcherIndex:AppDispatcher.register(function(payload){
 		var action = payload.action;
+		console.log(action.actionType);
 		switch(action.actionType){
 			case  AppConstants.ADD_ITEM:
 				_addItem(action.item);
@@ -21241,7 +21377,7 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 				_removeItem(action.item);
 				break;
 			
-			case  AppConstants.INCRESE_ITEM:
+			case  AppConstants.INCREASE_ITEM:
 				_increaseItem(action.item);
 				break;
 
@@ -21251,19 +21387,39 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 
 
 		};
-
+		
 		AppStore.emitChange();
 
 		return true;
 	}),
 	getCatloge:function(){
 		return _catalog;
+	},
+	getCart:function(){
+		return _cartItems; 
+	},
+	getTotal:function(){
+		var totalBill = calculateBill(_cartItems);
+		return totalBill;
+
+
 	}
 
+
 });
+
+function calculateBill(_cartItems){
+	var amount =0;
+	_cartItems.forEach(function(item){
+		console.log(item);
+		amount = amount + item.cost*item.qty;
+	});
+	console.log(amount);
+	return amount;
+}
 
 
 
 module.exports =  AppStore;
 
-},{"../constants/app-constants":180,"../dispatchers/app-dispatcher":181,"events":1,"react":175}]},{},[182]);
+},{"../constants/app-constants":184,"../dispatchers/app-dispatcher":185,"events":1,"react":175}]},{},[186]);

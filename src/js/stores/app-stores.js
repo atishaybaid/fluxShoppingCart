@@ -13,7 +13,9 @@ for(var i = 0;i<10;i++){
  _catalog.push({
  	id:i+1,
  	name:'item'+i,
- 	cost:50*i
+ 	cost:50*i,
+ 	qty:0,
+ 	inCart:false
  });
 
 }
@@ -26,17 +28,21 @@ function _removeItem(index){
 };
 
 function _increaseItem(index){
+	console.log(" at _increaseItem of store");
 	_cartItems[index].qty++;
 };
 
 function _decreaseItem(index){
+	console.log("at _decreaseItem");
 	_cartItems[index].qty--;
 };
 
 
 function _addItem(item){
 	item['qty'] = 1;
+	item['inCart'] = true;
 	_cartItems.push(item);
+	console.log(_cartItems);
 }
 
 
@@ -46,6 +52,7 @@ function _addItem(item){
 
 var AppStore = Object.assign(EventEmitter.prototype,{
 	emitChange:function(){
+		console.log("at emit change");
 		this.emit(changeEvent);
 	},
 	addChangeListener:function(callback){
@@ -56,6 +63,7 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 	},
 	displatcherIndex:AppDispatcher.register(function(payload){
 		var action = payload.action;
+		console.log(action.actionType);
 		switch(action.actionType){
 			case  AppConstants.ADD_ITEM:
 				_addItem(action.item);
@@ -65,7 +73,7 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 				_removeItem(action.item);
 				break;
 			
-			case  AppConstants.INCRESE_ITEM:
+			case  AppConstants.INCREASE_ITEM:
 				_increaseItem(action.item);
 				break;
 
@@ -75,16 +83,36 @@ var AppStore = Object.assign(EventEmitter.prototype,{
 
 
 		};
-
+		
 		AppStore.emitChange();
 
 		return true;
 	}),
 	getCatloge:function(){
 		return _catalog;
+	},
+	getCart:function(){
+		return _cartItems; 
+	},
+	getTotal:function(){
+		var totalBill = calculateBill(_cartItems);
+		return totalBill;
+
+
 	}
 
+
 });
+
+function calculateBill(_cartItems){
+	var amount =0;
+	_cartItems.forEach(function(item){
+		console.log(item);
+		amount = amount + item.cost*item.qty;
+	});
+	console.log(amount);
+	return amount;
+}
 
 
 

@@ -1,6 +1,6 @@
 var React = require('react');
 var AppCatloge = require('../components/app-catloge'); 
-
+var Cart = require('../components/app-cart');
 
 
 
@@ -15,6 +15,7 @@ var App = React.createClass({
 				<h1>Let's Shop</h1>
 				
 				<AppCatloge/>
+				<Cart/>
 
 			</div>
 			

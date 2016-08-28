@@ -15,6 +15,7 @@ var AppActions = {
 		})
 	},
 	increaseItem:function(index){
+		console.log("at increaseItem");
 		AppDispatcher.handleViewAction({
 			actionType:AppConstants.INCREASE_ITEM,
 			item:index
